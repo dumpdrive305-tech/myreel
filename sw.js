@@ -1,7 +1,10 @@
-const CACHE = 'myreels-v1';
+const CACHE = 'myreels-v2';
 const ASSETS = [
-  './index.html',
-  './manifest.json'
+  '/myreel/',
+  '/myreel/index.html',
+  '/myreel/manifest.json',
+  '/myreel/icon-192.png',
+  '/myreel/icon-512.png'
 ];
 
 self.addEventListener('install', e => {
@@ -21,9 +24,31 @@ self.addEventListener('activate', e => {
 });
 
 self.addEventListener('fetch', e => {
-  // For Telegram API calls — always go network, never cache
-  if (e.request.url.includes('api.telegram.org')) return;
+  const url = e.request.url;
 
+  // Never cache: Telegram API, GitHub API, Google Fonts
+  if (
+    url.includes('api.telegram.org') ||
+    url.includes('api.github.com') ||
+    url.includes('fonts.googleapis.com') ||
+    url.includes('fonts.gstatic.com')
+  ) return;
+
+  // Network first for HTML (always get latest app)
+  if (e.request.destination === 'document') {
+    e.respondWith(
+      fetch(e.request)
+        .then(res => {
+          const clone = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
+          return res;
+        })
+        .catch(() => caches.match(e.request))
+    );
+    return;
+  }
+
+  // Cache first for everything else (icons, manifest)
   e.respondWith(
     caches.match(e.request).then(cached => cached || fetch(e.request))
   );
