@@ -451,14 +451,12 @@ async function sha256(msg) {
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
-// ── GITHUB API ──
-// pat param: for register uses entered PAT, for login/sync uses sessionStorage cached PAT
+// ── GITHUB API (repo is public — no PAT needed for reads) ──
 async function ghGet(pat) {
+  const headers = { Accept: 'application/vnd.github.v3+json' };
   const token = pat || sessionStorage.getItem('mr_pat') || '';
-  if (!token) throw new Error('GitHub read failed: 401');
-  const r = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`, {
-    headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json' }
-  });
+  if (token) headers.Authorization = `token ${token}`;
+  const r = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`, { headers });
   if (r.status === 404) return { data: {}, sha: null };
   if (!r.ok) throw new Error(`GitHub read failed: ${r.status}`);
   const j = await r.json();
@@ -474,11 +472,58 @@ async function ghPut(data, sha, pat) {
   if (sha) body.sha = sha;
   const r = await fetch(`https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_FILE}`, {
     method: 'PUT',
-    headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
+    headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github.v3+json`, 'Content-Type': 'application/json' },
     body: JSON.stringify(body)
   });
   if (!r.ok) throw new Error(`GitHub write failed: ${r.status}`);
 }
+
+// ── AES-256-GCM ENCRYPTION (password is the key) ──
+async function getKey(password) {
+  const enc = new TextEncoder();
+  const raw = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey(
+    { name: 'PBKDF2', salt: enc.encode('myreels-salt-v1'), iterations: 100000, hash: 'SHA-256' },
+    raw, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']
+  );
+}
+
+async function encrypt(plaintext, password) {
+  const key = await getKey(password);
+  const iv  = crypto.getRandomValues(new Uint8Array(12));
+  const enc = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(plaintext));
+  const combined = new Uint8Array(iv.byteLength + enc.byteLength);
+  combined.set(iv, 0);
+  combined.set(new Uint8Array(enc), iv.byteLength);
+  return btoa(String.fromCharCode(...combined));
+}
+
+async function decrypt(ciphertext, password) {
+  try {
+    const combined = Uint8Array.from(atob(ciphertext), c => c.charCodeAt(0));
+    const iv  = combined.slice(0, 12);
+    const enc = combined.slice(12);
+    const key = await getKey(password);
+    const dec = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, enc);
+    return new TextDecoder().decode(dec);
+  } catch { return null; }
+}
+
+async function encryptSession(session, password) {
+  return {
+    ...session,
+    token:  await encrypt(session.token,  password),
+    chatId: await encrypt(session.chatId, password)
+  };
+}
+
+async function decryptSession(session, password) {
+  const token  = await decrypt(session.token,  password);
+  const chatId = await decrypt(session.chatId, password);
+  if (!token || !chatId) return null;
+  return { ...session, token, chatId };
+}
+
 
 // ── AUTH TAB SWITCH ──
 function switchTab(tab) {
@@ -536,7 +581,11 @@ async function authSubmit() {
       const user = freshData[username];
       if (!user) { showAuthError('Username not found.'); return; }
       if (user.hash !== hash) { showAuthError('Wrong password.'); return; }
-      currentUser = { username, isGuest: false, sessions: user.sessions || [] };
+      // Decrypt all sessions using password
+      const rawSessions = user.sessions || [];
+      const decrypted = await Promise.all(rawSessions.map(s => decryptSession(s, password)));
+      const sessions = decrypted.filter(Boolean);
+      currentUser = { username, isGuest: false, sessions, password };
       enterApp();
     } else {
       // Register — requires admin PAT
@@ -555,7 +604,7 @@ async function authSubmit() {
       sessionStorage.setItem('mr_pat', enteredPat);
       showAuthSuccess('Account created! Logging you in…');
       await new Promise(r => setTimeout(r, 800));
-      currentUser = { username, isGuest: false, sessions: [] };
+      currentUser = { username, isGuest: false, sessions: [], password };
       enterApp();
     }
   } catch(e) {
@@ -612,8 +661,12 @@ async function persistSessions() {
   }
   try {
     const { data, sha } = await ghGet();
-    if (!data[currentUser.username]) data[currentUser.username] = { hash: data[currentUser.username]?.hash || '', sessions: [] };
-    data[currentUser.username].sessions = currentUser.sessions;
+    if (!data[currentUser.username]) data[currentUser.username] = { hash: '', sessions: [] };
+    // Encrypt token and chatId before saving
+    const encrypted = await Promise.all(
+      currentUser.sessions.map(s => encryptSession(s, currentUser.password))
+    );
+    data[currentUser.username].sessions = encrypted;
     await ghPut(data, sha);
   } catch(e) {
     console.warn('Could not sync sessions:', e.message);
