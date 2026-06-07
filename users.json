@@ -5,9 +5,16 @@
       {
         "id": "mq42n5jfe42k",
         "name": "my-reels-one",
-        "token": "uhpJVZ1O7S/x8ByN9kY5ltuxtHrlk9+koNyXPz1siEr6JzdzadQPYSX4dV9DqIQ4ssRcTrBWXjwu7FmvwY+AwS2kUwQiFqnCZt0=",
-        "chatId": "jKOlS0MlWyIe4X39IeO3xo0CTvXS3O9rSzVoQliCo/TALqRZsbX8bdQv",
+        "token": "SDXpqJ/u/ijzAkRkFkQmg9ptjro3Hk2Sml+G6KpRTJcRjeD9pyOM0VkuT4BZ1mTIqPll9luNhCPP1B1ic5hcMdnYacWJ0ZBmygw=",
+        "chatId": "rwfHQWe6PG4kngpjQg5yd/rXrxId3sMtnScbXD0pl8unjBPclBA+oHb2",
         "color": "blue"
+      },
+      {
+        "id": "mq42ne2oeb57",
+        "name": "my-reels-one",
+        "token": "HaBEXcRnd5kGIx8ImJzxFnPHeEI1RlvSlhHchJzvUdCvAXH2/rsnIxqPJzFDzDAeypnI7gUD6a+UYajOHniTcBe7hmXfI35n5FQ=",
+        "chatId": "K0qaTFza7O3sCMTOBOi6bIECb62fiFCQeA/h89Ag18v4QT/iQLXpm/5X",
+        "color": "red"
       }
     ]
   }
