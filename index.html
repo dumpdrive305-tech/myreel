@@ -170,10 +170,15 @@
 
   /* ── PLAYER ── */
   #player { background:#000; touch-action:none; }
-  .video-slot { position:absolute; inset:0; background:#000; }
-  .video-slot video { width:100%; height:100%; object-fit:cover; display:block; background:#000; }
-  .video-slot video.fit-contain { object-fit:contain; }
+  .video-slot { position:absolute; inset:0; background:#000; display:flex; align-items:center; justify-content:center; }
+  .video-slot video { width:100%; height:100%; object-fit:contain; display:block; background:#000; }
+  .video-slot video.fit-cover { object-fit:cover; }
   .video-slot.hidden { display:none; }
+  /* On PC wide screens, limit player width so portrait videos don't stretch */
+  @media (min-width: 600px) and (orientation: landscape) {
+    #player { display:flex; align-items:center; justify-content:center; }
+    .video-slot { position:relative; width:auto; height:100%; aspect-ratio:9/16; max-width:400px; flex-shrink:0; }
+  }
   .grad-top { position:absolute; top:0; left:0; right:0; height:160px; background:linear-gradient(to bottom,rgba(0,0,0,0.7) 0%,transparent 100%); pointer-events:none; z-index:10; }
   .grad-bottom { position:absolute; bottom:0; left:0; right:0; height:220px; background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 100%); pointer-events:none; z-index:10; }
   .player-top { position:absolute; top:0; left:0; right:0; display:flex; align-items:center; justify-content:space-between; padding:52px 16px 0; z-index:20; }
@@ -950,14 +955,14 @@ function loadVideoIntoSlot(vid, idx) {
 
 function smartFit(vid) {
   if (!vid.videoWidth || !vid.videoHeight) return;
-  const screenRatio = window.innerWidth / window.innerHeight;
-  const videoRatio  = vid.videoWidth / vid.videoHeight;
-  // If video is significantly wider than screen (landscape video on portrait screen)
-  // use contain so it doesn't get weirdly cropped
-  if (videoRatio > screenRatio * 1.2) {
-    vid.classList.add('fit-contain');
-  } else {
+  const videoRatio = vid.videoWidth / vid.videoHeight;
+  // Portrait videos (ratio < 1) → cover to fill screen nicely
+  // Landscape/square videos → contain so nothing gets cropped
+  if (videoRatio < 1.0) {
+    vid.classList.add('fit-cover');
     vid.classList.remove('fit-contain');
+  } else {
+    vid.classList.remove('fit-cover');
   }
 }
 
@@ -1085,29 +1090,60 @@ function showLoadMoreBar() {
 }
 function hideLoadMoreBar() { document.getElementById('loadMoreBar').classList.remove('visible'); }
 
-// ── TOUCH ──
+// ── TOUCH & KEYBOARD — set up once only ──
+let inputReady = false;
 function setupTouch() {
+  if (inputReady) return; // prevent duplicate listeners
+  inputReady = true;
   const area = document.getElementById('touchArea');
   let sx=0,sy=0,st=0;
-  area.addEventListener('touchstart',e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY;st=Date.now();},{passive:true});
-  area.addEventListener('touchend',e=>{
-    const dx=e.changedTouches[0].clientX-sx,dy=e.changedTouches[0].clientY-sy,dt=Date.now()-st;
-    if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>40&&dt<500){navigate(dy<0?1:-1);}
-    else if(Math.abs(dy)<15&&Math.abs(dx)<15&&dt<250){const v=activeVid();v.paused?v.play():v.pause();const f=document.getElementById('tapFlash');f.classList.add('show');setTimeout(()=>f.classList.remove('show'),150);}
+
+  // Touch swipe
+  area.addEventListener('touchstart',e=>{
+    sx=e.touches[0].clientX; sy=e.touches[0].clientY; st=Date.now();
   },{passive:true});
+  area.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy, dt=Date.now()-st;
+    if(Math.abs(dy)>Math.abs(dx) && Math.abs(dy)>40 && dt<600) {
+      navigate(dy<0?1:-1);
+    } else if(Math.abs(dy)<20 && Math.abs(dx)<20 && dt<300) {
+      const v=activeVid(); v.paused?v.play():v.pause();
+      const f=document.getElementById('tapFlash'); f.classList.add('show'); setTimeout(()=>f.classList.remove('show'),150);
+    }
+  },{passive:true});
+
+  // Mouse drag (PC)
   let mx=0,my=0,md=false;
-  area.addEventListener('mousedown',e=>{md=true;mx=e.clientX;my=e.clientY;st=Date.now();});
+  area.addEventListener('mousedown',e=>{md=true;mx=e.clientX;my=e.clientY;st=Date.now();e.preventDefault();});
   area.addEventListener('mouseup',e=>{
-    if(!md)return;md=false;
-    const dx=e.clientX-mx,dy=e.clientY-my,dt=Date.now()-st;
-    if(Math.abs(dy)>Math.abs(dx)&&Math.abs(dy)>40&&dt<500)navigate(dy<0?1:-1);
-    else if(Math.abs(dy)<15&&Math.abs(dx)<15){const v=activeVid();v.paused?v.play():v.pause();}
+    if(!md)return; md=false;
+    const dx=e.clientX-mx, dy=e.clientY-my, dt=Date.now()-st;
+    if(Math.abs(dy)>Math.abs(dx) && Math.abs(dy)>30 && dt<600) navigate(dy<0?1:-1);
+    else if(Math.abs(dy)<10 && Math.abs(dx)<10) { const v=activeVid(); v.paused?v.play():v.pause(); }
   });
+  area.addEventListener('mouseleave',()=>{md=false;});
+
+  // Mouse wheel (PC)
   let wheelCooldown=false;
   document.addEventListener('wheel',e=>{
-    e.preventDefault();if(wheelCooldown)return;if(Math.abs(e.deltaY)<30)return;
-    wheelCooldown=true;navigate(e.deltaY>0?1:-1);setTimeout(()=>{wheelCooldown=false;},600);
+    if(!document.getElementById('player').classList.contains('hidden')) {
+      e.preventDefault();
+      if(wheelCooldown) return;
+      if(Math.abs(e.deltaY)<20) return;
+      wheelCooldown=true;
+      navigate(e.deltaY>0?1:-1);
+      setTimeout(()=>{wheelCooldown=false;},700);
+    }
   },{passive:false});
+
+  // Keyboard (PC) — arrow keys, space
+  document.addEventListener('keydown',e=>{
+    if(document.getElementById('player').classList.contains('hidden')) return;
+    if(e.key==='ArrowDown' || e.key==='ArrowRight') { e.preventDefault(); navigate(1); }
+    else if(e.key==='ArrowUp' || e.key==='ArrowLeft') { e.preventDefault(); navigate(-1); }
+    else if(e.key===' ') { e.preventDefault(); const v=activeVid(); v.paused?v.play():v.pause(); }
+    else if(e.key==='m') toggleMute();
+  });
 }
 
 // ── UTILS ──
