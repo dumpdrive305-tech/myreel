@@ -767,8 +767,7 @@ function showSettingsError(msg) {
 
 // ── LOADING UI ──
 function startLoading() {
-  document.getElementById('splashButtons').classList.add('loading-active');
-  document.getElementById('splashLoading').classList.add('active');
+  document.getElementById('homeLoading').classList.add('active');
   document.getElementById('splashError').classList.remove('visible');
 }
 function stopLoading() {
@@ -783,108 +782,95 @@ function showSplashError(msg) {
 }
 
 // ── FETCH ──
-// allMsgPool: resolved {url,name,fileId} objects — rebuilt fresh each load
-// KEY: every file is validated via getFile. Deleted files return ok:false → auto-skipped.
-// New uploads appear in getUpdates queue → included automatically.
+// allMsgPool: all raw video message objects ever collected (for true re-shuffle)
 let allMsgPool = [];
 
 async function fetchVideos(isMore) {
-  const base = \`https://api.telegram.org/bot\${currentToken}\`;
+  const base = `https://api.telegram.org/bot${currentToken}`;
   try {
+    const offKey = OFFSET_PREFIX + activeSessionId;
+    let offset = isMore ? parseInt(localStorage.getItem(offKey)||'0',10) : 0;
+
+    // Reset pool on fresh load
     if (!isMore) allMsgPool = [];
 
-    const offKey = OFFSET_PREFIX + activeSessionId;
-    // Fresh load: always start from 0 so we catch everything (deletions handled by getFile validation)
-    // "Load More": continue from saved offset to fetch only new messages
-    let offset = isMore ? parseInt(localStorage.getItem(offKey) || '0', 10) : 0;
-
+    // ── Loop getUpdates until Telegram has no more (returns < 100) ──
     let allVideoMsgs = [];
     let batchNum = 0;
-
     while (true) {
       batchNum++;
-      setLabel(\`Scanning… batch \${batchNum}\`);
-      const resp = await fetch(\`\${base}/getUpdates?offset=\${offset}&limit=100&allowed_updates=\${encodeURIComponent('["message","channel_post"]')}&timeout=0\`);
-      if (!resp.ok) throw new Error(\`HTTP \${resp.status}\`);
+      setLabel(`Scanning… batch ${batchNum}`);
+      const resp = await fetch(`${base}/getUpdates?offset=${offset}&limit=100&allowed_updates=${encodeURIComponent('["message","channel_post"]')}`);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       const data = await resp.json();
       if (!data.ok) { showSplashError(data.description || 'Telegram API error.'); return; }
 
       const updates = data.result || [];
       if (updates.length === 0) break;
 
-      offset = updates[updates.length - 1].update_id + 1;
+      offset = updates[updates.length-1].update_id + 1;
       localStorage.setItem(offKey, offset);
 
       const videos = updates.filter(upd => {
         const msg = upd.message || upd.channel_post;
         if (!msg) return false;
         const mid = String(msg.chat.id), cid = String(currentChatId);
-        const match = mid === cid || mid === cid.replace('-100', '') || \`-100\${mid}\` === cid;
+        const match = mid===cid || mid===cid.replace('-100','') || `-100${mid}`===cid;
         if (!match) return false;
         return msg.video || (msg.document && msg.document.mime_type?.startsWith('video/'));
       }).map(u => u.message || u.channel_post);
 
       allVideoMsgs.push(...videos);
-      if (updates.length < 100) break;
+      if (updates.length < 100) break; // reached the end
     }
 
-    setLabel(\`Found \${allVideoMsgs.length} messages, validating files…\`);
-
-    // ── CORE FIX: validate every file via getFile ──
-    // If a video was deleted from the chat, its file_id still exists in updates history
-    // but getFile returns ok:false → we skip it. New uploads also show up here.
-    async function resolveMsg(msg, index) {
-      const isVideo = !!msg.video;
-      const fileId  = isVideo ? msg.video.file_id : msg.document.file_id;
-      const name    = msg.caption || (isVideo ? msg.video.file_name : msg.document.file_name) || \`Video \${index + 1}\`;
-      const r = await fetch(\`\${base}/getFile?file_id=\${fileId}\`);
-      const d = await r.json();
-      if (!d.ok) return null; // deleted or inaccessible — skip silently
-      const url = \`https://api.telegram.org/file/bot\${currentToken}/\${d.result.file_path}\`;
-      return { url, name: name.trim(), fileId };
-    }
-
+    setLabel(`Found ${allVideoMsgs.length} videos, loading…`);
     if (allVideoMsgs.length === 0 && !isMore) {
       showSplashError('No videos found.\n\nCheck:\n• Bot is Admin in the group\n• You sent videos after adding the bot\n• Chat ID is correct');
       return;
     }
 
-    const shuffledMsgs = shuffle([...allVideoMsgs]);
+    // Add to pool and shuffle fully
+    allMsgPool.push(...allVideoMsgs);
+    const shuffledMsgs = shuffle([...allMsgPool]);
     const FAST_START = 5;
+    let launched = false;
+
+    async function resolveMsg(msg, index) {
+      const isVideo = !!msg.video;
+      const fileId  = isVideo ? msg.video.file_id : msg.document.file_id;
+      let name = msg.caption || (isVideo ? msg.video.file_name : msg.document.file_name) || `Video ${index+1}`;
+      const url = await getFileUrl(base, fileId);
+      if (!url) return null;
+      return { url, name: name.trim(), fileId };
+    }
+
     const firstBatch  = shuffledMsgs.slice(0, FAST_START);
     const restMsgs    = shuffledMsgs.slice(FAST_START);
     const firstVideos = [];
-    let launched = false;
 
     for (let i = 0; i < firstBatch.length; i++) {
-      setLabel(\`Checking files… \${i + 1} / \${allVideoMsgs.length}\`);
-      try {
-        const v = await resolveMsg(firstBatch[i], i);
-        if (v) { firstVideos.push(v); allMsgPool.push(v); }
-      } catch { continue; }
+      setLabel(`Loading… ${i+1} / ${allMsgPool.length}`);
+      try { const v = await resolveMsg(firstBatch[i], i); if (v) firstVideos.push(v); } catch { continue; }
     }
 
     if (firstVideos.length === 0 && !isMore) {
-      showSplashError('All videos in this group appear to be deleted or inaccessible.\nUpload new videos and try again.');
+      showSplashError('Could not load video URLs.\nFiles may be over 20MB (Telegram limit).');
       return;
     }
 
-    totalFetched = isMore ? totalFetched + firstVideos.length : firstVideos.length;
-    if (isMore) {
-      playlist.push(...firstVideos); updateCountUI();
-    } else {
-      playlist = [...firstVideos]; currentIdx = 0; stopLoading(); launchPlayer(); launched = true;
-    }
+    totalFetched += firstVideos.length;
+    if (isMore) { playlist.push(...firstVideos); updateCountUI(); }
+    else { playlist = [...firstVideos]; currentIdx = 0; stopLoading(); launchPlayer(); launched = true; }
 
-    // Validate & resolve the rest in background — deleted ones are silently dropped
+    // Resolve rest in background
     if (restMsgs.length > 0) {
       (async () => {
         for (let i = 0; i < restMsgs.length; i++) {
           try {
-            const v = await resolveMsg(restMsgs[i], FAST_START + i);
+            const v = await resolveMsg(restMsgs[i], FAST_START+i);
             if (!v) continue;
             playlist.push(v);
-            allMsgPool.push(v);
             totalFetched++;
             updateCountUI();
           } catch { continue; }
@@ -894,7 +880,20 @@ async function fetchVideos(isMore) {
     }
 
     if (isMore) { hideLoadMoreBar(); stopLoading(); if (!launched && playlist.length > 0) { show('player'); hide('home'); } }
-  } catch (e) { showSplashError(\`Error: \${e.message}\`); }
+  } catch(e) { showSplashError(`Error: ${e.message}`); }
+}
+
+function updateCountUI() {
+  const s = getSession(activeSessionId);
+  document.getElementById('playerCount').textContent  = `${currentIdx+1} / ${playlist.length}`;
+  document.getElementById('playerSource').textContent = `${s?s.name:'Telegram'} • ${totalFetched} loaded`;
+}
+
+async function getFileUrl(base, fileId) {
+  const r = await fetch(`${base}/getFile?file_id=${fileId}`);
+  const d = await r.json();
+  if (!d.ok) return null;
+  return `https://api.telegram.org/file/bot${currentToken}/${d.result.file_path}`;
 }
 
 async function loadMoreVideos() { hideLoadMoreBar(); await fetchVideos(true); }
