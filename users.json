@@ -1,6 +1,14 @@
 {
   "admin": {
     "hash": "b14e3218584b5bcbd6be775d58fd4cf32a506e77222ae2cbb2058e9495b979f2",
-    "sessions": []
+    "sessions": [
+      {
+        "id": "mq437echxgcp",
+        "name": "my-reel-one",
+        "token": "FhmDEoyavfmlOg3hf226lFPSrNPbjhT3kDsV4p5c2yjgHeUacsQHOIrfvUCR8xqUfgNijf8QJwG37StLJrO+Za6VTyeS07oOypc=",
+        "chatId": "G5/SwTVrtiZwwVsA6gJuPSZ3NEb1FeMeG/2y16DDeYfXexRUqLySGcU2",
+        "color": "blue"
+      }
+    ]
   }
 }
