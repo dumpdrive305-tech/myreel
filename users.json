@@ -3,17 +3,10 @@
     "hash": "b14e3218584b5bcbd6be775d58fd4cf32a506e77222ae2cbb2058e9495b979f2",
     "sessions": [
       {
-        "id": "mq42n5jfe42k",
-        "name": "my-reels-one",
-        "token": "SDXpqJ/u/ijzAkRkFkQmg9ptjro3Hk2Sml+G6KpRTJcRjeD9pyOM0VkuT4BZ1mTIqPll9luNhCPP1B1ic5hcMdnYacWJ0ZBmygw=",
-        "chatId": "rwfHQWe6PG4kngpjQg5yd/rXrxId3sMtnScbXD0pl8unjBPclBA+oHb2",
-        "color": "blue"
-      },
-      {
         "id": "mq42ne2oeb57",
         "name": "my-reels-one",
-        "token": "HaBEXcRnd5kGIx8ImJzxFnPHeEI1RlvSlhHchJzvUdCvAXH2/rsnIxqPJzFDzDAeypnI7gUD6a+UYajOHniTcBe7hmXfI35n5FQ=",
-        "chatId": "K0qaTFza7O3sCMTOBOi6bIECb62fiFCQeA/h89Ag18v4QT/iQLXpm/5X",
+        "token": "1ueKi/Q/lJ7p542xoj5Qzrmz7gImSMec0YzGI7p/yXgN+L1jzbNLT+4X+DJhVNUcGOtPla6E9wylR246uBK7kQ9QbZGsQPrlZlI=",
+        "chatId": "MPTsWd3ldBsh3Ytl0L6tLNv9XS/ZFk8TjsWiTZotXxSKi3OaPg2K6IYS",
         "color": "red"
       }
     ]
