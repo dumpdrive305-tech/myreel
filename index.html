@@ -614,6 +614,8 @@ function enterApp() {
     showSettings(true, null);
   } else {
     showSplash();
+    // Auto-open drawer so user sees saved groups right away
+    setTimeout(() => openDrawer(), 200);
   }
 }
 
