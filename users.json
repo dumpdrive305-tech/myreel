@@ -5,9 +5,16 @@
       {
         "id": "mq4pagwioply",
         "name": "Moments",
-        "token": "8LhdO3FIFBk1g4PTrNNKnKSypbLBA0RRk9o0P2uE0kqKkwgIrK9RE/vqWP1qzzfk7t3+FqfBAvnzkAoVCGFPmQiEozHyBXXW5k8=",
-        "chatId": "mANVdmEsMHRObUCK+U1aFKPvgUCjgTR35PeWG/FWcJ66LiIifv96DQYd",
+        "token": "Dh2qDCkTY+yZMwUiYKH8vAWyk/ex/dctV7bdKtUNjACuyGS5ImODHwE95m+dTPqpRERhIC03m7IvY0x/5IZaix9ijv2mnWZGMSM=",
+        "chatId": "qp+u0y985tkXlRXo55X+e6ZvGBzgzq7NUIX/22tt3soSDwTOtB/NIW7C",
         "color": "blue"
+      },
+      {
+        "id": "mq5mnu0ocgdy",
+        "name": "Reel",
+        "token": "/QoCWyhdog48gUY8DUMyLNq1+vtv4wnFF0wrWwwMdZXyDi4bCr0feUpZWyhhUfo8jVN4SDNwqcUfNl49EwKC+AQia3VFIf8+wQM=",
+        "chatId": "+8H/Xqfb/soNOWwZ6MR4IgCXU13dL8ClqTmzxXXhA9M4Ba6WR29EyhpT",
+        "color": "red"
       }
     ]
   }
