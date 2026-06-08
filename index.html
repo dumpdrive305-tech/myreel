@@ -217,6 +217,19 @@
   .tap-flash { position:absolute; inset:0; z-index:16; background:rgba(255,255,255,0.07); opacity:0; pointer-events:none; transition:opacity 0.15s; }
   .tap-flash.show { opacity:1; }
 
+  /* ── VIDEO OPTIONS OVERLAY ── */
+  .video-opts-overlay { position:fixed; inset:0; z-index:50; background:rgba(0,0,0,0.7); display:flex; align-items:flex-end; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.25s; -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); }
+  .video-opts-overlay.open { opacity:1; pointer-events:all; }
+  .video-opts-box { background:#161616; border:1px solid var(--border); border-radius:24px 24px 0 0; width:100%; max-width:480px; padding:20px 20px 40px; transform:translateY(100%); transition:transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94); }
+  .video-opts-overlay.open .video-opts-box { transform:translateY(0); }
+  .video-opts-title { font-size:13px; font-weight:700; color:var(--muted); margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--border); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .video-opt-btn { width:100%; height:52px; border:none; border-radius:14px; font-family:var(--font-display); font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:12px; padding:0 16px; margin-bottom:8px; transition:opacity 0.15s; }
+  .video-opt-btn:active { opacity:0.7; }
+  .video-opt-btn.danger { background:rgba(255,36,66,0.1); color:#ff2442; }
+  .video-opt-btn.danger-all { background:rgba(255,36,66,0.06); color:#ff6b6b; }
+  .video-opt-btn.cancel { background:rgba(255,255,255,0.06); color:var(--muted); }
+  .video-opt-btn svg { width:18px; height:18px; flex-shrink:0; }
+
   @keyframes slideInUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
   @keyframes slideOutUp { from{transform:translateY(0)} to{transform:translateY(-100%)} }
   @keyframes slideInDown { from{transform:translateY(-100%)} to{transform:translateY(0)} }
@@ -375,6 +388,9 @@
     <div class="ctrl-btn" id="btnShuffle" onclick="shufflePlaylist()">
       <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
     </div>
+    <div class="ctrl-btn" id="btnOpts" onclick="openVideoOpts()">
+      <svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </div>
   </div>
 
   <div class="player-bottom">
@@ -395,6 +411,25 @@
   </div>
 </div>
 
+<!-- ══ VIDEO OPTIONS OVERLAY ══ -->
+<div class="video-opts-overlay" id="videoOptsOverlay">
+  <div class="video-opts-box">
+    <div class="video-opts-title" id="videoOptsTitle">Video options</div>
+    <button class="video-opt-btn danger" onclick="deleteCurrentVideo()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#ff2442" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+      Delete this video
+    </button>
+    <button class="video-opt-btn danger-all" onclick="deleteAllVideos()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#ff6b6b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="4" y1="4" x2="20" y2="20"/></svg>
+      Delete all videos in this group
+    </button>
+    <button class="video-opt-btn cancel" onclick="closeVideoOpts()">
+      Cancel
+    </button>
+  </div>
+</div>
+
+
 <script>
 // ══════════════════════════════════════════════
 //  CONFIG
@@ -403,7 +438,6 @@ const WORKER_URL = 'https://myreel-api.dump-drive-305.workers.dev';
 // ══════════════════════════════════════════════
 
 const COLORS = ['blue','red','green','purple','orange'];
-const OFFSET_PREFIX = 'mr_off_';
 
 // Runtime state
 let currentUser   = null;   // {username, isGuest, sessions:[]}
@@ -427,22 +461,8 @@ const slotA  = document.getElementById('slotA');
 const slotB  = document.getElementById('slotB');
 
 // ── INIT ──
-(async function init() {
-  // Try to restore saved login session from localStorage
-  try {
-    const saved = localStorage.getItem('mr_saved_session');
-    if (saved) {
-      const { username, password, sessions } = JSON.parse(saved);
-      if (username && password && sessions) {
-        currentUser = { username, isGuest: false, sessions, password };
-        enterApp();
-        return;
-      }
-    }
-  } catch(e) {
-    localStorage.removeItem('mr_saved_session');
-  }
-  // No saved session — show auth screen normally
+(function init() {
+  // Worker URL handles all auth — no secrets in this file
 })();
 
 // ── SHA-256 ──
@@ -588,7 +608,6 @@ function guestMode() {
 }
 
 function logout() {
-  localStorage.removeItem('mr_saved_session');
   currentUser = null;
   activeSessionId = null;
   playlist = [];
@@ -607,14 +626,6 @@ function enterApp() {
     badge.innerHTML = '👀 guest mode';
   } else {
     badge.innerHTML = `@<b>${currentUser.username}</b>`;
-    // Save login to localStorage so refresh doesn't require re-login
-    try {
-      localStorage.setItem('mr_saved_session', JSON.stringify({
-        username: currentUser.username,
-        password: currentUser.password,
-        sessions: currentUser.sessions
-      }));
-    } catch(e) {}
   }
 
   if (currentUser.sessions.length === 0) {
@@ -631,14 +642,6 @@ async function persistSessions() {
     localStorage.setItem('mr_guest_sessions', JSON.stringify(currentUser.sessions));
     return;
   }
-  // Keep the localStorage login cache in sync with latest sessions
-  try {
-    localStorage.setItem('mr_saved_session', JSON.stringify({
-      username: currentUser.username,
-      password: currentUser.password,
-      sessions: currentUser.sessions
-    }));
-  } catch(e) {}
   try {
     // Encrypt sessions before sending to Worker
     const encrypted = await Promise.all(
@@ -690,10 +693,6 @@ function renderDrawer() {
 }
 
 function selectSession(id) {
-  // Always clear offset on fresh tap so getUpdates rescans from 0
-  // This ensures deleted videos are dropped and new uploads appear
-  localStorage.removeItem(OFFSET_PREFIX + id);
-  allMsgPool = [];
   activeSessionId = id;
   const s = getSession(id);
   if (!s) return;
@@ -702,16 +701,12 @@ function selectSession(id) {
   totalFetched  = 0;
   playlist = [];
   startLoading();
-  fetchVideos(false);
+  fetchVideos();
 }
 
 function addSession() { showSettings(false, null); }
 
-// Clear all cached offset + pool for a session and rescan from scratch
 function refreshSession(id) {
-  const offKey = OFFSET_PREFIX + id;
-  localStorage.removeItem(offKey);
-  allMsgPool = [];
   playlist = [];
   activeSessionId = id;
   const s = getSession(id);
@@ -721,7 +716,7 @@ function refreshSession(id) {
   totalFetched  = 0;
   showHome();
   startLoading();
-  fetchVideos(false);
+  fetchVideos();
 }
 
 async function deleteSession(id) {
@@ -813,7 +808,7 @@ async function saveAndLoad() {
   showHome();
   renderDrawer();
   startLoading();
-  await fetchVideos(false);
+  await fetchVideos();
 }
 
 function showSettingsError(msg) {
@@ -837,122 +832,139 @@ function showSplashError(msg) {
   el.textContent = msg; el.classList.add('visible');
 }
 
-// ── FETCH ──
-// allMsgPool: all raw video message objects ever collected (for true re-shuffle)
-let allMsgPool = [];
-
-async function fetchVideos(isMore) {
+// ── FETCH (via Worker /videos — clean list, webhook keeps it updated) ──
+async function fetchVideos() {
   const base = `https://api.telegram.org/bot${currentToken}`;
   try {
-    const offKey = OFFSET_PREFIX + activeSessionId;
-    let offset = isMore ? parseInt(localStorage.getItem(offKey)||'0',10) : 0;
+    setLabel('Loading videos…');
 
-    // Reset pool on fresh load
-    if (!isMore) allMsgPool = [];
-
-    // ── Loop getUpdates until Telegram has no more (returns < 100) ──
-    let allVideoMsgs = [];
-    let batchNum = 0;
-    while (true) {
-      batchNum++;
-      setLabel(`Scanning… batch ${batchNum}`);
-      const resp = await fetch(`${base}/getUpdates?offset=${offset}&limit=100&allowed_updates=${encodeURIComponent('["message","channel_post"]')}`);
-      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-      const data = await resp.json();
-      if (!data.ok) { showSplashError(data.description || 'Telegram API error.'); return; }
-
-      const updates = data.result || [];
-      if (updates.length === 0) break;
-
-      offset = updates[updates.length-1].update_id + 1;
-      localStorage.setItem(offKey, offset);
-
-      const videos = updates.filter(upd => {
-        const msg = upd.message || upd.channel_post;
-        if (!msg) return false;
-        const mid = String(msg.chat.id), cid = String(currentChatId);
-        const match = mid===cid || mid===cid.replace('-100','') || `-100${mid}`===cid;
-        if (!match) return false;
-        return msg.video || (msg.document && msg.document.mime_type?.startsWith('video/'));
-      }).map(u => u.message || u.channel_post);
-
-      allVideoMsgs.push(...videos);
-      if (updates.length < 100) break; // reached the end
-    }
-
-    setLabel(`Found ${allVideoMsgs.length} videos, loading…`);
-    if (allVideoMsgs.length === 0 && !isMore) {
-      showSplashError('No videos found.\n\nCheck:\n• Bot is Admin in the group\n• You sent videos after adding the bot\n• Chat ID is correct');
+    // Guest mode: fall back to direct getUpdates scan (no Worker auth)
+    if (currentUser.isGuest) {
+      showSplashError('Guest mode: please log in to use synced video lists.');
       return;
     }
 
-    // Add to pool and shuffle fully
-    allMsgPool.push(...allVideoMsgs);
-    const shuffledMsgs = shuffle([...allMsgPool]);
-    const FAST_START = 5;
-    let launched = false;
+    const hash = await sha256(currentUser.password);
+    const r = await fetch(`${WORKER_URL}/videos`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: currentUser.username, hash, chatId: currentChatId })
+    });
+    const j = await r.json();
+    if (!j.ok) { showSplashError('Could not load videos: ' + j.error); return; }
 
-    async function resolveMsg(msg, index) {
-      const isVideo = !!msg.video;
-      const fileId  = isVideo ? msg.video.file_id : msg.document.file_id;
-      let name = msg.caption || (isVideo ? msg.video.file_name : msg.document.file_name) || `Video ${index+1}`;
-      const url = await getFileUrl(base, fileId);
-      if (!url) return null;
-      return { url, name: name.trim(), fileId };
+    const items = j.videos || [];
+    if (items.length === 0) {
+      showSplashError('No videos found.\n\nSend videos to your group \u2014 they appear here automatically via the webhook.');
+      return;
     }
 
-    const firstBatch  = shuffledMsgs.slice(0, FAST_START);
-    const restMsgs    = shuffledMsgs.slice(FAST_START);
+    setLabel(`Found ${items.length} videos, resolving…`);
+    const shuffled = shuffle([...items]);
+    const FAST_START = 5;
+    const firstBatch = shuffled.slice(0, FAST_START);
+    const rest = shuffled.slice(FAST_START);
     const firstVideos = [];
 
     for (let i = 0; i < firstBatch.length; i++) {
-      setLabel(`Loading… ${i+1} / ${allMsgPool.length}`);
-      try { const v = await resolveMsg(firstBatch[i], i); if (v) firstVideos.push(v); } catch { continue; }
+      setLabel(`Loading… ${i+1} / ${items.length}`);
+      try {
+        const v = await resolveFileId(base, firstBatch[i]);
+        if (v) firstVideos.push(v);
+      } catch { continue; }
     }
 
-    if (firstVideos.length === 0 && !isMore) {
+    if (firstVideos.length === 0) {
       showSplashError('Could not load video URLs.\nFiles may be over 20MB (Telegram limit).');
       return;
     }
 
-    totalFetched += firstVideos.length;
-    if (isMore) { playlist.push(...firstVideos); updateCountUI(); }
-    else { playlist = [...firstVideos]; currentIdx = 0; stopLoading(); launchPlayer(); launched = true; }
+    playlist = [...firstVideos];
+    currentIdx = 0;
+    totalFetched = firstVideos.length;
+    stopLoading();
+    launchPlayer();
 
     // Resolve rest in background
-    if (restMsgs.length > 0) {
+    if (rest.length > 0) {
       (async () => {
-        for (let i = 0; i < restMsgs.length; i++) {
+        for (const item of rest) {
           try {
-            const v = await resolveMsg(restMsgs[i], FAST_START+i);
+            const v = await resolveFileId(base, item);
             if (!v) continue;
             playlist.push(v);
             totalFetched++;
             updateCountUI();
           } catch { continue; }
         }
-        hideLoadMoreBar();
       })();
     }
-
-    if (isMore) { hideLoadMoreBar(); stopLoading(); if (!launched && playlist.length > 0) { show('player'); hide('home'); } }
   } catch(e) { showSplashError(`Error: ${e.message}`); }
+}
+
+async function resolveFileId(base, item) {
+  const r = await fetch(`${base}/getFile?file_id=${item.fileId}`);
+  const d = await r.json();
+  if (!d.ok) return null;
+  const url = `https://api.telegram.org/file/bot${currentToken}/${d.result.file_path}`;
+  return { url, name: item.name, fileId: item.fileId };
 }
 
 function updateCountUI() {
   const s = getSession(activeSessionId);
   document.getElementById('playerCount').textContent  = `${currentIdx+1} / ${playlist.length}`;
-  document.getElementById('playerSource').textContent = `${s?s.name:'Telegram'} • ${totalFetched} loaded`;
+  document.getElementById('playerSource').textContent = `${s?s.name:'Telegram'} \u2022 ${totalFetched} loaded`;
 }
 
-async function getFileUrl(base, fileId) {
-  const r = await fetch(`${base}/getFile?file_id=${fileId}`);
-  const d = await r.json();
-  if (!d.ok) return null;
-  return `https://api.telegram.org/file/bot${currentToken}/${d.result.file_path}`;
+async function loadMoreVideos() { hideLoadMoreBar(); }
+
+// ── VIDEO OPTIONS (gear menu) ──
+function openVideoOpts() {
+  const item = playlist[currentIdx];
+  document.getElementById('videoOptsTitle').textContent = item ? item.name.replace(/\.[^.]+$/,'').replace(/[_-]/g,' ') : 'Options';
+  document.getElementById('videoOptsOverlay').classList.add('open');
+}
+function closeVideoOpts() {
+  document.getElementById('videoOptsOverlay').classList.remove('open');
 }
 
-async function loadMoreVideos() { hideLoadMoreBar(); await fetchVideos(true); }
+async function deleteCurrentVideo() {
+  closeVideoOpts();
+  const item = playlist[currentIdx];
+  if (!item) return;
+  try {
+    const hash = await sha256(currentUser.password);
+    await fetch(`${WORKER_URL}/delete-video`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: currentUser.username, hash, chatId: currentChatId, fileId: item.fileId })
+    });
+  } catch(e) { console.warn('delete failed', e); }
+  playlist.splice(currentIdx, 1);
+  totalFetched = Math.max(0, totalFetched - 1);
+  if (playlist.length === 0) { exitPlayer(); return; }
+  if (currentIdx >= playlist.length) currentIdx = playlist.length - 1;
+  loadVideoIntoSlot(activeVid(), currentIdx);
+  activeVid().play().catch(()=>{});
+  updateUI();
+}
+
+async function deleteAllVideos() {
+  if (!confirm('Delete ALL videos in this group? This cannot be undone.')) return;
+  closeVideoOpts();
+  try {
+    const hash = await sha256(currentUser.password);
+    await fetch(`${WORKER_URL}/delete-all`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: currentUser.username, hash, chatId: currentChatId })
+    });
+  } catch(e) { console.warn('delete-all failed', e); }
+  playlist = [];
+  totalFetched = 0;
+  exitPlayer();
+}
+
 
 // ── PLAYER ──
 function launchPlayer() {
@@ -1054,60 +1066,11 @@ function toggleMute() {
 }
 
 function shufflePlaylist() {
-  // True shuffle: re-resolve URLs from the full message pool in new random order
-  // Keep currently playing video at position 0, everything else is brand new order
   const cur = playlist[currentIdx];
-
-  // Get already-resolved map by fileId for instant lookup
-  const resolved = {};
-  for (const v of playlist) { if (v.fileId) resolved[v.fileId] = v; }
-
-  // Shuffle the full message pool
-  const newOrder = shuffle([...allMsgPool]);
-
-  // Build new playlist: resolved ones go in immediately, unresolved ones get re-fetched in bg
-  const base = `https://api.telegram.org/bot${currentToken}`;
-  const newPlaylist = [];
-
-  for (const msg of newOrder) {
-    const isVideo = !!msg.video;
-    const fileId  = isVideo ? msg.video.file_id : msg.document.file_id;
-    if (resolved[fileId]) newPlaylist.push(resolved[fileId]);
-    // unresolved ones will be fetched below
-  }
-
-  // Fetch any unresolved ones in background
-  const resolvedIds = new Set(newPlaylist.map(v=>v.fileId));
-  const unresolved  = newOrder.filter(msg => {
-    const fid = (msg.video || msg.document).file_id;
-    return !resolvedIds.has(fid);
-  });
-
-  if (unresolved.length > 0) {
-    (async () => {
-      for (let i = 0; i < unresolved.length; i++) {
-        try {
-          const msg = unresolved[i];
-          const isVideo = !!msg.video;
-          const fileId  = isVideo ? msg.video.file_id : msg.document.file_id;
-          const name    = msg.caption || (isVideo ? msg.video.file_name : msg.document.file_name) || `Video`;
-          const r = await fetch(`${base}/getFile?file_id=${fileId}`);
-          const d = await r.json();
-          if (!d.ok) continue;
-          const url = `https://api.telegram.org/file/bot${currentToken}/${d.result.file_path}`;
-          newPlaylist.push({ url, name: name.trim(), fileId });
-          updateCountUI();
-        } catch { continue; }
-      }
-    })();
-  }
-
-  // Put current video at front so it keeps playing
-  const curIdx = cur ? newPlaylist.findIndex(v => v.fileId === cur.fileId) : -1;
-  if (curIdx > 0) { newPlaylist.splice(curIdx, 1); newPlaylist.unshift(cur); }
-  else if (cur && curIdx === -1) newPlaylist.unshift(cur);
-
-  playlist = newPlaylist;
+  const rest = playlist.filter((_, i) => i !== currentIdx);
+  const shuffled = shuffle(rest);
+  // Keep current video at front so it keeps playing
+  playlist = cur ? [cur, ...shuffled] : shuffled;
   currentIdx = 0;
   updateCountUI();
   document.getElementById('btnShuffle').classList.add('active');
