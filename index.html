@@ -461,8 +461,20 @@ const slotA  = document.getElementById('slotA');
 const slotB  = document.getElementById('slotB');
 
 // ── INIT ──
-(function init() {
-  // Worker URL handles all auth — no secrets in this file
+(async function init() {
+  try {
+    const saved = localStorage.getItem('mr_saved_session');
+    if (saved) {
+      const { username, password, sessions } = JSON.parse(saved);
+      if (username && password && sessions) {
+        currentUser = { username, isGuest: false, sessions, password };
+        enterApp();
+        return;
+      }
+    }
+  } catch(e) {
+    localStorage.removeItem('mr_saved_session');
+  }
 })();
 
 // ── SHA-256 ──
@@ -608,6 +620,7 @@ function guestMode() {
 }
 
 function logout() {
+  localStorage.removeItem('mr_saved_session');
   currentUser = null;
   activeSessionId = null;
   playlist = [];
@@ -626,6 +639,14 @@ function enterApp() {
     badge.innerHTML = '👀 guest mode';
   } else {
     badge.innerHTML = `@<b>${currentUser.username}</b>`;
+    // Persist login so refresh doesn't require re-login
+    try {
+      localStorage.setItem('mr_saved_session', JSON.stringify({
+        username: currentUser.username,
+        password: currentUser.password,
+        sessions: currentUser.sessions
+      }));
+    } catch(e) {}
   }
 
   if (currentUser.sessions.length === 0) {
@@ -642,6 +663,14 @@ async function persistSessions() {
     localStorage.setItem('mr_guest_sessions', JSON.stringify(currentUser.sessions));
     return;
   }
+  // Keep localStorage cache in sync so refresh stays logged in with latest sessions
+  try {
+    localStorage.setItem('mr_saved_session', JSON.stringify({
+      username: currentUser.username,
+      password: currentUser.password,
+      sessions: currentUser.sessions
+    }));
+  } catch(e) {}
   try {
     // Encrypt sessions before sending to Worker
     const encrypted = await Promise.all(
