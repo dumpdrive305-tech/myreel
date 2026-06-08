@@ -1,14 +1,6 @@
 {
   "admin": {
     "hash": "b14e3218584b5bcbd6be775d58fd4cf32a506e77222ae2cbb2058e9495b979f2",
-    "sessions": [
-      {
-        "id": "mq462hbgvo7j",
-        "name": "Reel",
-        "token": "ThrLGzRCVUFiOUOinKqM3rWVdn3oDUeiPO9psQNR+J69/1UycFTp2CBlWo7ULifXFod7ra0ioiWdEqiCXXE9/yghqJ6+yfuy6WU=",
-        "chatId": "dhkgi07GuL2MH11iXtVsB9HauMWek1jWd4DOEQRW+2TKVEr0QtxoD6T3",
-        "color": "blue"
-      }
-    ]
+    "sessions": []
   }
 }
