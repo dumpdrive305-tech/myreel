@@ -20,6 +20,14 @@
   },
   "shuvo": {
     "hash": "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92",
-    "sessions": []
+    "sessions": [
+      {
+        "id": "mqruqx1tcmhd",
+        "name": "Shuvo shared",
+        "token": "NPCIVmy/YVr0Dex4A/2hPnNfzB+u7SU9FRaOA7AQBGBYjrQA8ljxjVaVUeiC8cHWn7H8KK7XQxkcPi3/Yh8wpDXTzsCIb1msqE4=",
+        "chatId": "wsrhaEfoqGeNozhaAXRQjJGZPx+doV6+PmNvHFWnWt7VrnqC2PCYYCg8",
+        "color": "blue"
+      }
+    ]
   }
 }
