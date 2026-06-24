@@ -5,16 +5,23 @@
       {
         "id": "mq4pagwioply",
         "name": "Moments",
-        "token": "etA+Wenk3o+XWBQn60sQT+QhSpQgRSVeb+B9mSU2NWQUP4IXkqVe1bNScnorgRDtKjrnOnTeMW6TEVA35DlUPyxA3oQ7hbtvyVg=",
-        "chatId": "FrCipKq6wgFXG0psA5CHLVnO5m0Hll0s99qtTDYVNM/j3TvPaocsDtsj",
+        "token": "TL328gon6z70mMbay7V8dj2ynXRbui7rlWpWgXpo5XLcftn/NYa6x8Muk+tsi1A6mKlIBQuUJ5H1tedE6hy8LsUQzQuGbiGwsNg=",
+        "chatId": "HXRe6GPc4mLMDdWF8Xk1YUFy/gfWcHV2USPHtKdxQfnKSuSKuWF6wGC2",
         "color": "blue"
       },
       {
         "id": "mqrtfcdq4nie",
         "name": "Hot reels",
-        "token": "R/UqA5XBskQO6/0V4ToQIWHYvXZ4OIa0tZep5tdItWqJUWcdz3O46NqmMiVspMV2pf3GEaD7T2PH0pCkWRJC/33Ay39gKoT5994=",
-        "chatId": "jE8txcQ7bVMZc600WMwEYkAEmSYjWtHCFdsBuCJ27y2IktkHSPKq",
+        "token": "ZyuZs9wO6suR0O1TkNYOMcMO/unnYJ+zmKHA4SSKDCL9j34PXPGIFZv8Ocd7eOMco81xrG4XfzQTRMspaGF4v+uvDduDq5rKMNw=",
+        "chatId": "yI7k5LIdr9R+C8u901Qmz7E9ebqkLM3wkm+yYvLByRXXnPak1cdw",
         "color": "red"
+      },
+      {
+        "id": "mqrtfftqfydx",
+        "name": "Hot reels",
+        "token": "mBYOo14LsP4C+6g+stlTZpklFAi4ujHyRjq+fqh3XCC2FpmJylN9wHU3Vn7sZoRHZ/19G56tpf/4ISDdGUPmxmcEQk1Ib4DXfVo=",
+        "chatId": "Xi5H/FHKEVUCI7y+4w+z/ZZkTUqnHZ+4ICJmlTx/nj28so+Cs4J+",
+        "color": "green"
       }
     ]
   }
