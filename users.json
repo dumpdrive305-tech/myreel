@@ -1,23 +1,4 @@
 {
-  "admin": {
-    "hash": "b14e3218584b5bcbd6be775d58fd4cf32a506e77222ae2cbb2058e9495b979f2",
-    "sessions": [
-      {
-        "id": "mq4pagwioply",
-        "name": "Moments",
-        "token": "mgEEAaRrWR5EaUE59WKkGBegdFTKEyIysSwYU8aqRaxctOi0oOBDjdsUj3RIIvqExedSAM5gluwek8YTtdJRQvFpEGAZLa33VUk=",
-        "chatId": "8HbCCgyPVhoz5muyXvpPMPQ7WTm/mMp8dZClUL9K6HiSSJoVNhd2Jii1",
-        "color": "blue"
-      },
-      {
-        "id": "mqrui9r7s66p",
-        "name": "Hot reels",
-        "token": "mJnyLDY+12KHLlE8777e+DCVbMEh2+izypz0hjqY0bBwDdHOm+28abKb6+i5dZIOKaJNeNh6x7kLa5EfDKYJQbRB8cnCu0A7xf4=",
-        "chatId": "FmQrmSejFbChtGUnId5udc8nsHAaLSxARYEifZeMKozin1ELgOCqLAvV",
-        "color": "red"
-      }
-    ]
-  },
   "__admin__": {
     "hash": "b14e3218584b5bcbd6be775d58fd4cf32a506e77222ae2cbb2058e9495b979f2",
     "sessions": []
