@@ -21,5 +21,10 @@
   "__admin__": {
     "hash": "b14e3218584b5bcbd6be775d58fd4cf32a506e77222ae2cbb2058e9495b979f2",
     "sessions": []
+  },
+  "fahim": {
+    "hash": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+    "passwordEnc": "MzbJWj2kQeHvY13hu50CIkjknB/vsDJEEa87l5sFtiU=",
+    "sessions": []
   }
 }
