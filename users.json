@@ -6,6 +6,15 @@
   "fahim": {
     "hash": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
     "passwordEnc": "MzbJWj2kQeHvY13hu50CIkjknB/vsDJEEa87l5sFtiU=",
-    "sessions": []
+    "sessions": [
+      {
+        "id": "1afbe4b3-5d00-4d73-a3ed-000dab3c5e63",
+        "name": "ye",
+        "token": "8819304855:AAFbfwAqoG7ErOSoQPsYA_uSuswQbWcQESw",
+        "chatId": "-1004434976837",
+        "color": "blue",
+        "shared": true
+      }
+    ]
   }
 }
