@@ -28,6 +28,15 @@
   "fahim01": {
     "hash": "2a2f06d725edabcd218adbd07140beabecd755525310c92a657f809c0909c439",
     "passwordEnc": "avp2isHUsHy+uhR4Mwq2qV/6fJRPX/HA3dMFs8oIIOGJV98=",
-    "sessions": []
+    "sessions": [
+      {
+        "id": "94676551-f12d-4b65-a5c2-9f37aa6fbc99",
+        "name": "My video",
+        "token": "8819304855:AAFbfwAqoG7ErOSoQPsYA_uSuswQbWcQESw",
+        "chatId": "-1003830002546",
+        "color": "blue",
+        "shared": true
+      }
+    ]
   }
 }
