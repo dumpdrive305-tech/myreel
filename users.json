@@ -14,6 +14,14 @@
         "chatId": "-1004497605374",
         "color": "blue",
         "shared": true
+      },
+      {
+        "id": "013f3df1-9ae6-471c-82d0-484f8a2d0d74",
+        "name": "Bsnzj",
+        "token": "8819304855:AAFbfwAqoG7ErOSoQPsYA_uSuswQbWcQESw",
+        "chatId": "-1004454421205",
+        "color": "blue",
+        "shared": true
       }
     ]
   }
