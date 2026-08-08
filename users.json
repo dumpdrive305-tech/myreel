@@ -6,16 +6,7 @@
   "fahim": {
     "hash": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
     "passwordEnc": "MzbJWj2kQeHvY13hu50CIkjknB/vsDJEEa87l5sFtiU=",
-    "sessions": [
-      {
-        "id": "013f3df1-9ae6-471c-82d0-484f8a2d0d74",
-        "name": "Bsnzj",
-        "token": "8819304855:AAFbfwAqoG7ErOSoQPsYA_uSuswQbWcQESw",
-        "chatId": "-1004454421205",
-        "color": "blue",
-        "shared": true
-      }
-    ]
+    "sessions": []
   },
   "fahim01": {
     "hash": "2a2f06d725edabcd218adbd07140beabecd755525310c92a657f809c0909c439",
