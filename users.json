@@ -15,6 +15,16 @@
         "color": "blue",
         "shared": true,
         "tapMode": "ask"
+      },
+      {
+        "id": "e6b52292-65ab-405b-8d11-1398ac2c3172",
+        "name": "My video",
+        "token": "8819304855:AAFbfwAqoG7ErOSoQPsYA_uSuswQbWcQESw",
+        "chatId": "-1003830002546",
+        "color": "green",
+        "role": "viewer",
+        "shared": true,
+        "sharedBy": "fahim01"
       }
     ]
   },
