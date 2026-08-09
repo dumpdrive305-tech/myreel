@@ -8,15 +8,6 @@
     "passwordEnc": "MzbJWj2kQeHvY13hu50CIkjknB/vsDJEEa87l5sFtiU=",
     "sessions": [
       {
-        "id": "68ed6eb0-d6c4-438f-ac16-80e81e54de16",
-        "name": "hot video",
-        "token": "8819304855:AAFbfwAqoG7ErOSoQPsYA_uSuswQbWcQESw",
-        "chatId": "-1003857871615",
-        "color": "blue",
-        "shared": true,
-        "tapMode": "ask"
-      },
-      {
         "id": "e6b52292-65ab-405b-8d11-1398ac2c3172",
         "name": "My video",
         "token": "8819304855:AAFbfwAqoG7ErOSoQPsYA_uSuswQbWcQESw",
