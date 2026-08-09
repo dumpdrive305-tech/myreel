@@ -13,7 +13,8 @@
         "token": "8819304855:AAFbfwAqoG7ErOSoQPsYA_uSuswQbWcQESw",
         "chatId": "-1003857871615",
         "color": "blue",
-        "shared": true
+        "shared": true,
+        "tapMode": "play"
       }
     ]
   },
