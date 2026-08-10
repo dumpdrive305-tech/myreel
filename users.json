@@ -16,6 +16,16 @@
         "role": "viewer",
         "shared": true,
         "sharedBy": "fahim01"
+      },
+      {
+        "id": "0547e6d9-4e91-4bf1-8eb2-2120f654f437",
+        "name": "hot video",
+        "token": "8819304855:AAFbfwAqoG7ErOSoQPsYA_uSuswQbWcQESw",
+        "chatId": "-1003857871615",
+        "color": "purple",
+        "role": "admin",
+        "shared": true,
+        "sharedBy": "fahim01"
       }
     ]
   },
@@ -42,5 +52,9 @@
       }
     ]
   },
-  "__channelAdmins__": {}
+  "__channelAdmins__": {
+    "-1003857871615": [
+      "fahim"
+    ]
+  }
 }
