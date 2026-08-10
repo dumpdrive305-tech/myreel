@@ -24,7 +24,8 @@
         "chatId": "-1004366707283",
         "color": "blue",
         "role": "admin",
-        "shared": true
+        "shared": true,
+        "autoCache": true
       }
     ]
   },
