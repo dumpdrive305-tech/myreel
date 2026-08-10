@@ -40,6 +40,16 @@
         "chatId": "-1003830002546",
         "color": "blue",
         "shared": true
+      },
+      {
+        "id": "0d37f12f-2b58-4fc5-b4cb-20bb77811935",
+        "name": "hot video",
+        "token": "8819304855:AAFbfwAqoG7ErOSoQPsYA_uSuswQbWcQESw",
+        "chatId": "-1003857871615",
+        "color": "green",
+        "role": "viewer",
+        "shared": true,
+        "sharedBy": "fahim"
       }
     ]
   },
