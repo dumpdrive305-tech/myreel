@@ -26,15 +26,6 @@
         "role": "admin",
         "shared": true,
         "sharedBy": "fahim01"
-      },
-      {
-        "id": "d5d4c18b-1057-425a-8192-2b9a3ea29557",
-        "name": "bangla magi",
-        "token": "8819304855:AAFbfwAqoG7ErOSoQPsYA_uSuswQbWcQESw",
-        "chatId": "-1004477498149",
-        "color": "blue",
-        "role": "admin",
-        "shared": true
       }
     ]
   },
