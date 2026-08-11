@@ -26,6 +26,15 @@
         "role": "admin",
         "shared": true,
         "autoCache": true
+      },
+      {
+        "id": "1614e67c-99b7-4003-9433-be9e7a9cbd19",
+        "name": "Adrenaline",
+        "token": "8819304855:AAFbfwAqoG7ErOSoQPsYA_uSuswQbWcQESw",
+        "chatId": "-1003988451270",
+        "color": "blue",
+        "role": "admin",
+        "shared": true
       }
     ]
   },
@@ -45,6 +54,9 @@
   },
   "__channelAdmins__": {
     "-1004366707283": [
+      "fahim"
+    ],
+    "-1003988451270": [
       "fahim"
     ]
   }
