@@ -36,6 +36,15 @@
         "role": "admin",
         "shared": true,
         "autoCache": true
+      },
+      {
+        "id": "fb9ff122-0cd8-4663-95f8-ea6d2758a655",
+        "name": "Peace",
+        "token": "8819304855:AAFbfwAqoG7ErOSoQPsYA_uSuswQbWcQESw",
+        "chatId": "-1004437406675",
+        "color": "blue",
+        "role": "admin",
+        "shared": true
       }
     ]
   },
@@ -58,6 +67,9 @@
       "fahim"
     ],
     "-1003988451270": [
+      "fahim"
+    ],
+    "-1004437406675": [
       "fahim"
     ]
   }
