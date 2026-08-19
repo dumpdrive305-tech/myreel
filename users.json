@@ -45,6 +45,15 @@
         "color": "blue",
         "role": "admin",
         "shared": true
+      },
+      {
+        "id": "32fb79e5-83c8-4648-9092-cb04269c93bd",
+        "name": "Phone backup",
+        "token": "8819304855:AAFbfwAqoG7ErOSoQPsYA_uSuswQbWcQESw",
+        "chatId": "-1004479334197",
+        "color": "blue",
+        "role": "admin",
+        "shared": true
       }
     ]
   },
@@ -70,6 +79,9 @@
       "fahim"
     ],
     "-1004437406675": [
+      "fahim"
+    ],
+    "-1004479334197": [
       "fahim"
     ]
   }
